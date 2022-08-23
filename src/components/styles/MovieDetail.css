@@ -1,0 +1,93 @@
+/* FONTS */
+
+h1{
+    font-size: 2rem;
+}
+h2{
+    border-bottom: 1px solid rgba(90, 90, 90, 0.45);
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+p{
+    font-weight: 0;
+    font-size: 0.8rem;
+    ;
+}
+
+/* IMAGES */
+
+    /* STAR ICON */
+    .detail-page .detail-page-info-section img{
+        opacity: 1;
+    }
+
+    /* BACKGROUND IMAGE */
+    .detail-page .bg-image{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        opacity: 0.35;
+        -webkit-mask-image:-webkit-gradient(linear, left top, left bottom, from(#060d17), to(rgba(0,0,0,0)));
+        mask-image: linear-gradient(to bottom, #060d17, rgba(0,0,0,0));
+    }
+    
+
+.detail-page{
+    width: 100%;
+    height: 50%;
+    position: relative;
+    text-align: left;
+    color: #ffffff;
+    font-family: roboto;
+}
+
+
+.detail-page-info-section{
+    width: 45%;
+}
+
+@media only screen and (max-width: 900px) {
+    .detail-page-info-section{
+        width: 90%;
+    }
+}
+
+.detail-page .detail-page-info-section{
+    position: absolute;
+    top: 8%;
+    left: 8%;
+}
+
+.detail-page-info-section .info-box {
+    margin-bottom: 10px;
+}
+
+.detail-page-info-section .info-box p{
+    display: inline;
+    margin-right: 10px;
+}
+
+.rating-section{
+    margin-top: 20px;
+}
+
+.cast{
+    margin-top: 20px;
+}
+
+.detail-page-info-section button{
+    margin-top: 30px;
+}
+
+.loading-screen{
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner{
+    margin-top: 100px;
+}

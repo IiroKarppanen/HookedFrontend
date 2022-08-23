@@ -1,0 +1,207 @@
+body > #root > .movie-container {
+  height: 100vh;
+  margin:0;
+  padding:0;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .icon {
+    @apply relative flex items-center justify-center 
+    h-9 w-9 ml-5
+  bg-primary-700 hover:bg-primary-600 
+  text-primary-100 hover:text-white
+    hover:rounded-xl rounded-3xl
+    transition-all duration-300 ease-linear
+    cursor-pointer shadow-lg 
+    hover:shadow-lg hover:shadow-[#3c2ab0]/30;
+  } 
+  .pagination-icon {
+    @apply relative flex items-center justify-center 
+    h-9 w-9
+  bg-primary-700 hover:bg-primary-600 
+  text-primary-100 hover:text-white
+    hover:rounded-xl rounded-3xl
+    transition-all duration-300 ease-linear
+    cursor-pointer shadow-lg 
+    hover:shadow-lg hover:shadow-[#3c2ab0]/30;
+  } 
+  .navbar-icon {
+    @apply relative flex items-center justify-center 
+    h-9 w-9 ml-3
+  bg-primary-700 hover:bg-primary-600 
+  text-primary-100 hover:text-white
+    hover:rounded-xl rounded-3xl
+    transition-all duration-300 ease-linear
+    cursor-pointer shadow-lg 
+    hover:shadow-lg hover:shadow-[#3c2ab0]/30;
+  } 
+
+  .delete-icon{
+    @apply relative flex items-center justify-center -translate-y-full float-right mr-2 w-7 h-7 rounded-3xl bg-primary-600 bg-opacity-30 text-white text-opacity-60 hover:text-opacity-90 selection:hover:opacity-80 hover:bg-primary-600;
+  }
+
+  .add-icon{
+    @apply relative flex items-center justify-center -translate-y-full float-right mr-2 w-7 h-7 rounded-3xl bg-primary-600 bg-opacity-30 text-white text-opacity-60 hover:text-opacity-90 selection:hover:opacity-80 hover:bg-primary-600;
+  }
+
+  .genre-link{
+    @apply inline-block text-lg tb:text-base lp:text-base dp:text-base font-thin no-underline text-[#cfd0d0] hover:text-primary-100 cursor-pointer m-auto pl-2 pr-2;
+  }
+  
+  .filters{
+    @apply  flex border-b border-[#cfd0d02c] content-end overflow-x-auto overflow-y-hidden h-11 whitespace-nowrap 
+    scrollbar scrollbar-thumb-primary-700 scrollbar-track-primary-800;
+  }
+  .filters::-webkit-scrollbar {
+    height: 2px;   
+    border: 0px solid rgb(255, 255, 255);         
+  }
+  .filters::-webkit-scrollbar-track {
+    background: rgba(27, 29, 47, 0.623);
+    border: 0px solid rgb(255, 255, 255);
+  }  
+
+  .filters::-webkit-scrollbar-thumb {
+    background-color: rgba(46, 48, 67, 0.623);   
+    border-radius: 20px;      
+    border: 0px solid rgb(255, 255, 255);
+  }
+
+}
+
+.footer {
+  width:100%;
+    height:80px;
+    position:absolute;
+    bottom:0;
+    left:0;
+}
+
+.content{
+  height: 100%;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+.movie-container{
+  justify-content: center;
+  position: absolute;
+  height: 100vh;
+  left: 50%;
+  transform: translate(-50%);
+  margin-top: 35px;
+}
+
+
+.movie-grid {
+  min-height: 100vh;
+  position: absolute;
+  width: 100%;
+  left: 50%;
+  transform: translate(-50%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 160px);
+  grid-template-rows: 237px 237px 237px 237px 237px;
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+}
+
+
+.movie-box {
+  height: 100%;
+  overflow: hidden;
+}
+
+.movie-box {
+  text-decoration: none;
+}
+
+.movie-box h2{
+  border: 0px solid;
+}
+
+.movie-box img{
+  width: 100%;
+  height: 237px; 
+  border-radius: 8px;
+}
+
+span{
+  background: linear-gradient(0deg, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.4) 61%, rgba(255,255,255,0) 100%);
+  display: none;
+  height: 200px;
+  width: 100%;
+  position: relative;
+  bottom: 200px;
+  margin-bottom: -200px;
+  border-radius: 8px;
+  }
+
+a:hover span {
+  display:block;
+  }
+
+.movie-info{
+  display: grid;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  grid-template-columns: auto;
+  width: 150px;
+  height: 40%;
+  position: absolute;
+  bottom: 0;
+  word-wrap: break-word;  
+  text-align: center;
+  text-decoration:none;
+  pointer-events: none;
+}
+
+.movie-info h2{
+  margin: 0px;
+  font-size: 14px;
+  text-align: center;
+  color: #cfd0d0;
+  font-weight: 500;
+}
+
+.movie-info h3{
+  margin: 0px;
+  padding-top: 3px;
+  font-size: 13px;
+  text-align: center;
+  color: #cfd0d0;
+  font-weight: 400;
+}
+
+.movie-info .rating{
+  margin-bottom: 7px;
+}
+
+.movie-info .rating img{
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.movie-info h1{
+  display: inline-block;
+  font-size: 13px;
+  text-align: center;
+  color: #cfd0d0;
+  font-weight: 400;
+  padding-left: 5px;
+}
+
+
+.sortby select:focus{
+  font-weight: 1;
+  background-color: #10161d;
+  color: #cfd0d0;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(46, 48, 67, 0.623); 
+}
