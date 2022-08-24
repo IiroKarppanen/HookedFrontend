@@ -70,9 +70,12 @@ function Movie() {
             setFilteredMovies(Object.values(obj))
         }
         else if(e.target.text !== "Popular"){
-            data && setFilteredMovies(data.filter(movie => {
-                return movie.genres.includes(e.target.text)}));
-            
+  
+            let filtered = data && data.filter(movie => {
+                return movie.genres.includes(e.target.text)})
+
+            let obj = filtered.reduce((r, o) => (o.votes < (r[o.movie_id] || {}).votes || (r[o.movie_id] = o), r), {});
+            setFilteredMovies(Object.values(obj))
         }
     };
 
