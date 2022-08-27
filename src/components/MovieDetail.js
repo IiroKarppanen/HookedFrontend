@@ -30,7 +30,7 @@ export const MovieDetail = () => {
     }
 
     // Run watchlist add/delete function
-    const handleWatchlist = (method) => {
+    const handleWatchlist = (method, e) => {
 
         UseWatchlist(method, movie.movie_id);
 
@@ -49,7 +49,7 @@ export const MovieDetail = () => {
 
     return (
         <div>
-            <div onClick={handleClick}>
+            <div onMouseDown={handleClick}>
                 {loginMenu === true && <Login />}
             </div>
             <NavBar/>
@@ -101,8 +101,8 @@ export const MovieDetail = () => {
                     {cookies.get('watchlist') === undefined
                     ? <button type="button" className="btn btn-outline-light" onClick={() => setLoginMenu(true)}>Add To Watchlist</button>
                     :   cookies.get('watchlist').includes(movie.movie_id)
-                        ? <button type="button" className="btn btn-outline-light" onClick={() => handleWatchlist('/delete')}>Delete From Watchlist</button>
-                        : <button type="button" className="btn btn-outline-light" onClick={() => handleWatchlist('/add')}>Add To Watchlist</button>
+                        ? <button type="button" className="btn btn-outline-light" onClick={(e) => handleWatchlist('/delete', e)}>Delete From Watchlist</button>
+                        : <button type="button" className="btn btn-outline-light" onClick={(e) => handleWatchlist('/add', e)}>Add To Watchlist</button>
                     }
                                     
                 </div>

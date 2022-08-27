@@ -6,16 +6,21 @@ import { Link } from 'react-router-dom';
 import UseWatchlist  from "./UseWatchlist";
 import Spinner from "./Spinner";
 import useWindowDimensions from "./useWindowDimensions";
+import Cookies from 'universal-cookie';
+import { Login } from "./Login";
+import NavBar from "./Navbar";
 
 export const Search = () => {
 
     const [ inputValue, setInputValue ] = useState('');
     const [ searchResults, setSearchResults ] = useState(null);
     const [ insideButton, setInsideButton ] = useState(false);
+    const [ loginMenu, setLoginMenu] = useState(false); 
     const [ imagesLoaded, setImagesLoaded ] = useState(false);
     const { data } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
 
     const { width } = useWindowDimensions();
+    const cookies = new Cookies();
     const gridRef = useRef()
 
     useEffect(() => {
@@ -51,16 +56,12 @@ export const Search = () => {
         
     }, [searchResults])
 
-    // Run watchlist add/delete function
-    const addItem = (e) => {
-
-        let id = e.target.parentNode.getAttribute("id");
-        if(id === null){
-          id = e.target.getAttribute("id");
+    // If login menu is active and user clicks wrapper, close menu
+    const handleClick = (e) => {
+        if(e.target.className.includes("login-wrapper")){
+            setLoginMenu(false)
         }
-
-        UseWatchlist('/add', id);
-    } 
+    }
 
     const handleLink = (e) => {
         // If user click add to watchlist button don't disable movie link
@@ -99,7 +100,7 @@ export const Search = () => {
 
                 <span>
                 
-                <div className="add-icon" id={movie.movie_id} onClick={addItem}
+                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('name') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}
                     onMouseEnter={() => setInsideButton(true)}
                     onMouseLeave={() => setInsideButton(false)}
                     >  
@@ -122,6 +123,10 @@ export const Search = () => {
 
     return (
         <div className="m-auto w-11/12 tb:w-10/12 pt-10">
+            <div onMouseDown={handleClick}>
+                {loginMenu === true && <Login />}
+            </div>
+
             <div class="wrapper relative font-roboto text-primary-100 ml-auto mr-auto tb:ml-0 lp:ml-0 dp:ml-0 mb-8 w-[90%] dp:w-72 lp:w-72 tb:w-72 h-10 bg-transparent">
                 <div class="absolute top-1/2 left-2 -translate-y-1/2 text-opacity-40">
                     <BsSearch size='14'/>

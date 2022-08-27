@@ -14,7 +14,6 @@ function App() {
     <Router>
         <Switch>
           <Route exact path='/'>
-            <NavBar />
             <Movie />
           </Route>
         </Switch>

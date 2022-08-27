@@ -6,10 +6,15 @@ import  { MdFilterListAlt } from 'react-icons/md';
 import { BiSortAlt2 } from 'react-icons/bi';
 import { BsFillBookmarkFill, BsArrowRight, BsArrowLeft } from 'react-icons/bs';
 import { BiFirstPage } from 'react-icons/bi'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Spinner from "./Spinner";
-import { LazyLoadImage } from 'react-lazy-load-image-component';    
+import NavBar from "./Navbar";
+import { Login } from "./Login";  
 import UseWatchlist  from "./UseWatchlist";
 import useWindowDimensions from "./useWindowDimensions";
+import Cookies from 'universal-cookie';
+import { VscClose } from "react-icons/vsc";
+
 
 
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -20,16 +25,22 @@ function Movie() {
     const [filteredMovies, setFilteredMovies] = useState(null);
     const [selectState, setSelectState] = useState("undefined");
     const [reverseState, setReverseState] = useState(false);
-    const [ insideButton, setInsideButton ] = useState(false);
+    const [ loginMenu, setLoginMenu] = useState(false); 
     const [ imagesLoaded, setImagesLoaded ] = useState(false);
+
+    const [ updatePage, setUpdatePage ] = useState('');
 
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ itemCount, setItemCount ] = useState(0);
     const { width } = useWindowDimensions();
+    const [ iconStyle, setIconStyle ] = useState('');
 
     const { data, isPending } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
 
     const gridRef = useRef()
+    const cookies = new Cookies();
+
+    const watchlist = cookies.get('watchlist');
 
     useEffect(() => {
         console.log("PENDING DATA: ", isPending);
@@ -145,19 +156,33 @@ function Movie() {
             
         }
 
-        // Run watchlist add/delete function
-        const addItem = (e) => {
-
-            let id = e.target.parentNode.getAttribute("id");
-            if(id === null){
-              id = e.target.getAttribute("id");
+        const handleLink = (e, id) => {
+            // Don't follow link if user clicked save/unsave movie button
+            if((e.target.parentNode.id) === id){
+                e.preventDefault()
+                setUpdatePage(id)
+                setIconStyle('animate-spin')
+                //e.target.parentNode.parentNode.className = 'add-icon animate-spin';
+                setTimeout(() => {
+                    console.log("DO ANIMATION NOW");
+                    //e.target.parentNode.parentNode.className = 'add-icon';
+                    setUpdatePage('') 
+                    setIconStyle('')   
+                }, 1000)
             }
-
-            UseWatchlist('/add', id);
-        } 
-
-        const handleLink = (e) => {
-            if(insideButton === true){e.preventDefault()}
+            if((e.target.className) === 'add-icon'){
+                e.preventDefault()
+                setUpdatePage(id)
+                setIconStyle('animate-spin')
+                //e.target.className = 'add-icon animate-spin';
+                setTimeout(() => {
+                    console.log("DO ANIMATION NOW");
+                    // e.target.className = 'add-icon';
+                    setUpdatePage('') 
+                    setIconStyle('')   
+                }, 1000)
+                
+            }
         }
 
         const handleLoad = (e) => {
@@ -176,6 +201,14 @@ function Movie() {
             }
             else{
                 setImagesLoaded(false)
+            }
+        }
+
+        // If login menu is active and user clicks wrapper, close menu
+        const handleClick = (e) => {
+            if(e.target.className.includes("login-wrapper")){
+                setLoginMenu(false)
+
             }
         }
 
@@ -210,7 +243,7 @@ function Movie() {
      
         <div key={movie.movie_id} className="movie-box animate-fade"> 
         
-            <Link onClick={handleLink} to={`/detail/${movie.id}`}>  
+            <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
 
                 <img
                     src={require(`./posters/${movie.movie_id}.jpg`)}
@@ -219,12 +252,26 @@ function Movie() {
                 />
 
                 <span>
-                <div className="add-icon" id={movie.movie_id} onClick={addItem}
-                onMouseEnter={() => setInsideButton(true)}
-                onMouseLeave={() => setInsideButton(false)}
-                >  
-                    <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+
+                {watchlist !== undefined && watchlist.includes(movie.movie_id) 
+                ? 
+                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', e)}> 
+                {console.log("UPDATE PAGE")} 
+                {console.log(updatePage)}
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <VscClose id={movie.movie_id} size='24'/>
+                }
                 </div>
+                :
+                <div className="add-icon" id={movie.movie_id} data-tooltip-target="tooltip-default" onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}>  
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+                }
+                </div>
+                }
+
                 <div className="movie-info">
                     <h2>{movie.title}</h2>
                     <h3>{movie.start_year}</h3>
@@ -243,6 +290,11 @@ function Movie() {
         return (
 
             <div>
+
+            <div onMouseDown={handleClick}>
+                {loginMenu === true && <Login />}
+            </div>
+            <NavBar/>
 
             <div className="content">
 

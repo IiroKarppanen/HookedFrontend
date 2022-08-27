@@ -8,14 +8,15 @@ import { VscClose } from "react-icons/vsc";
 import axios from "axios";
 import Spinner from "./Spinner";
 import useWindowDimensions from "./useWindowDimensions";
+import { GridComponent } from 'react-spring-animated-grid'
 
 export const WatchList = () => {
 
   const { data } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
   const [ movies, setMovies ] = useState(null);
+  const [ boxStyle, setBoxStyle ] = useState('movie-box animate-fade');
   const [ isLoggedIn, setIsLoggedIn ] = useState(true);
   const [ loginMenu, setLoginMenu ] = useState(false);
-  const [ insideButton, setInsideButton ] = useState(false);
   const [ imagesLoaded, setImagesLoaded ] = useState(false);
 
   const { width } = useWindowDimensions();
@@ -23,6 +24,8 @@ export const WatchList = () => {
   const gridRef = useRef();
 
   useEffect(() => {
+    console.log("MOVIES CHANGED");
+    console.log(movies);
     // Check how many items watchlist has, if not enough to fill one row change justify-center to justify-left
     if(movies !== null){
 
@@ -64,26 +67,29 @@ export const WatchList = () => {
 
   const deleteItem = (e) => {
 
+    // Start fadeOut animation for deleted movie
+    e.target.parentNode.parentNode.parentNode.parentNode.className = 'movie-box animate-fadeOut';
+    
+
+    // Get movie id
     let id = e.target.parentNode.getAttribute("id");
     if(id === null){
       id = e.target.getAttribute("id");
     }
-    let watchlist = cookies.get('watchlist');
 
-    if(typeof watchlist === 'string'){
-      watchlist = watchlist.replace(/\'/g, '"');
-      watchlist = JSON.parse("[" + watchlist + "]")[0];
-    }
+    setTimeout(() => {
 
-    for( var i = 0; i < watchlist.length; i++){ 
-    
-      if ( watchlist[i] === id) { 
-  
-          watchlist.splice(i, 1); 
-      }
-  
-    }
+    setMovies(movies.filter(movie => movie.movie_id != id))
 
+    // Stop animation
+    e.target.parentNode.parentNode.parentNode.parentNode.className = 'movie-box';
+    setBoxStyle('movie-box animate-slowSpin')
+
+    setTimeout(() => {setBoxStyle('movie-box animate-fade')}, 300)
+
+    }, 300)
+
+    // Remove movie from database watchlist
     axios({
       method: "POST",
       url:"https://hooked-to-movies.herokuapp.com/api/watchlist/delete",
@@ -92,13 +98,9 @@ export const WatchList = () => {
         watchlist: id
        }
     }).then((response) => {
-      cookies.set("watchlist", response.data.watchlist);
-
-      let objectList = [];
-      watchlist.forEach(function (item) {
-      objectList.push((data.filter((movie) => movie.movie_id === item))[0])
-      });
-      setMovies(objectList);
+      // Update cookies
+      cookies.set("watchlist", response.data.watchlist);     
+      console.log(movies); 
     })
   }
 
@@ -129,15 +131,21 @@ export const WatchList = () => {
   }
 
   // If cursor is inside button in movie box ignore link to movie page
-  const handleLink = (e) => {
-    if(insideButton === true){e.preventDefault()}
-  }
+  const handleLink = (e, id) => {
+    // Don't follow link if user clicked save/unsave movie button
+    if((e.target.parentNode.id) === id){
+        e.preventDefault()
+    }
+    if((e.target.className) === 'delete-icon'){
+        e.preventDefault()
+    }
+}
 
   const currentPageData = movies && movies
     .map((movie)=>
     
-    <div key={movie.movie_id} className="movie-box animate-fade"> 
-        <Link to={`/detail/${movie.id}`} onClick={handleLink}>      
+    <div key={movie.movie_id} className={`movie-box ${boxStyle}`}> 
+        <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
             <img
             src={require(`./posters/${movie.movie_id}.jpg`)} 
             id={'none'}
@@ -148,8 +156,6 @@ export const WatchList = () => {
             
             <div className="delete-icon" id={movie.movie_id} onClick={deleteItem}>  
                     <VscClose id={movie.movie_id} size='28'
-                     onMouseEnter={() => setInsideButton(true)}
-                     onMouseLeave={() => setInsideButton(false)}
                     />
             </div>
             
@@ -171,7 +177,7 @@ export const WatchList = () => {
     <div>
         <title>Hooked</title>
 
-        <div onClick={handleClick}>
+        <div onMousePress={handleClick}>
           {loginMenu === true && <Login />}
         </div>
         <NavBar />
