@@ -10,6 +10,7 @@ import Cookies from 'universal-cookie';
 import { Login } from "./Login";
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { VscClose } from "react-icons/vsc";
+import NavBar from "./Navbar";
 
 export const Search = () => {
 
@@ -167,10 +168,16 @@ export const Search = () => {
         );
 
     return (
+        <div>
+        
+        <div onMouseDown={handleClick}>
+            {loginMenu === true && <Login />}
+        </div>
+        <NavBar/>
         <div className="m-auto w-11/12 tb:w-10/12 pt-10">
-            <div onMouseDown={handleClick}>
-                {loginMenu === true && <Login />}
-            </div>
+            
+
+            
 
             <div class="wrapper relative font-roboto text-primary-100 ml-auto mr-auto tb:ml-0 lp:ml-0 dp:ml-0 mb-8 w-[90%] dp:w-72 lp:w-72 tb:w-72 h-10 bg-transparent">
                 <div class="absolute top-1/2 left-2 -translate-y-1/2 text-opacity-40">
@@ -199,6 +206,7 @@ export const Search = () => {
                 </div>
             
             </div>
+        </div>
         </div>
     )
     }

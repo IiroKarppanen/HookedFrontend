@@ -39,7 +39,6 @@ function App() {
 
         <Switch>
           <Route path="/search">
-            <NavBar />
             <Search />
           </Route>
         </Switch>
