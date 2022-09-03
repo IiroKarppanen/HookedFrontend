@@ -8,7 +8,6 @@ import { VscClose } from "react-icons/vsc";
 import axios from "axios";
 import Spinner from "./Spinner";
 import useWindowDimensions from "./useWindowDimensions";
-import { GridComponent } from 'react-spring-animated-grid'
 
 export const WatchList = () => {
 
@@ -79,7 +78,7 @@ export const WatchList = () => {
 
     setTimeout(() => {
 
-    setMovies(movies.filter(movie => movie.movie_id != id))
+    setMovies(movies.filter(movie => movie.movie_id !== id))
 
     // Stop animation
     e.target.parentNode.parentNode.parentNode.parentNode.className = 'movie-box';
@@ -113,17 +112,15 @@ export const WatchList = () => {
 
   const handleLoad = (e) => {
 
-    console.log("LOADED");
-
     let gridItems = Object.values(gridRef.current.children);
 
-    // Remove last item (pagination box)
+    // Remove last item from grid items list (pagination box)
     gridItems.pop();
 
-    // Set movie box id loaded when image is loaded
+    // Set movie box id to "loaded" when image is loaded
     e.target.parentNode.parentNode.id = 'loaded';
 
-    //console.log(gridItems.every(item => item.innerHTML.includes('loaded')));
+    // Check if all movie boxes have id "loaded", if true set imagesloaded true and show grid
     if(gridItems.every(item => item.id === "loaded") === true){
         setImagesLoaded(true)
     }
