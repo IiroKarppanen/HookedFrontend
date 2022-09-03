@@ -8,7 +8,8 @@ import Spinner from "./Spinner";
 import useWindowDimensions from "./useWindowDimensions";
 import Cookies from 'universal-cookie';
 import { Login } from "./Login";
-import NavBar from "./Navbar";
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { VscClose } from "react-icons/vsc";
 
 export const Search = () => {
 
@@ -17,10 +18,15 @@ export const Search = () => {
     const [ insideButton, setInsideButton ] = useState(false);
     const [ loginMenu, setLoginMenu] = useState(false); 
     const [ imagesLoaded, setImagesLoaded ] = useState(false);
-    const { data } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
+    const [ updatePage, setUpdatePage ] = useState('');
+    const [ updatePage2, setUpdatePage2 ] = useState('');
+    const [ boxStyle, setBoxStyle ] = useState('movie-box animate-fade');
+    const [ iconStyle, setIconStyle ] = useState('');
+    const { data } = useFetch("https://hookedbackend.onrender.com/movies/")
 
     const { width } = useWindowDimensions();
     const cookies = new Cookies();
+    const watchlist = cookies.get('watchlist');
     const gridRef = useRef()
 
     useEffect(() => {
@@ -63,11 +69,6 @@ export const Search = () => {
         }
     }
 
-    const handleLink = (e) => {
-        // If user click add to watchlist button don't disable movie link
-        if(insideButton === true){e.preventDefault()}
-    }
-
     const handleLoad = (e) => {
 
         let gridItems = Object.values(gridRef.current.children);
@@ -87,12 +88,45 @@ export const Search = () => {
         }
     }
 
+    const handleLink = (e, id) => {
+        // Don't follow link if user clicked save/unsave movie button
+        console.log(e.target.parentNode);
+        console.log(e.target);
+        if((e.target.parentNode.id) === id){
+            e.preventDefault()
+            setUpdatePage(id)
+            setBoxStyle('movie-box')
+            setIconStyle('animate-spin')
+            
+            setTimeout(function() { 
+                setUpdatePage('') 
+                setIconStyle('')  
+                setUpdatePage2(id) 
+                setTimeout(() => {setUpdatePage2('')}, 1000) 
+            }, 500);
+        }
+        if((e.target.className) === 'add-icon'){
+            e.preventDefault()
+            setUpdatePage(id)
+            setBoxStyle('movie-box')
+            setIconStyle('animate-spin')
+
+            setTimeout(function() { 
+                setUpdatePage('') 
+                setIconStyle('')  
+                setUpdatePage2(id) 
+                setTimeout(() => {setUpdatePage2('')}, 1000) 
+             }, 500);
+                    
+        }
+    }
+
 
     const movies = searchResults && searchResults
         .map((movie)=>
         
-        <div key={movie.movie_id} className="movie-box animate-fade"> 
-            <Link to={`/detail/${movie.id}`} onClick={handleLink}>      
+        <div key={movie.movie_id} className={updatePage2 === movie.movie_id ? 'movie-box animate-save' : `${boxStyle}`}> 
+            <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
                 <img
                 src={require(`./posters/${movie.movie_id}.jpg`)} 
                 onLoad={(e) => {handleLoad(e)}}
@@ -100,21 +134,32 @@ export const Search = () => {
 
                 <span>
                 
-                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('name') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}
-                    onMouseEnter={() => setInsideButton(true)}
-                    onMouseLeave={() => setInsideButton(false)}
-                    >  
-                        <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+                {watchlist !== undefined && watchlist.includes(movie.movie_id) 
+                ? 
+                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', e)}> 
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <VscClose id={movie.movie_id} size='24'/>
+                }
                 </div>
-                
+                :
+                <div className="add-icon" id={movie.movie_id} data-tooltip-target="tooltip-default" onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}>  
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+                }
+                </div>
+                }
+
                 <div className="movie-info">
                     <h2>{movie.title}</h2>
                     <h3>{movie.start_year}</h3>
                     <div className="rating">
-                    <img src={require(`./img/star.png`)} />
-                    <h1>{movie.rating}</h1>
+                        <img src={require(`./img/star.png`)} />
+                        <h1>{movie.rating}</h1>
                     </div>
                 </div>
+
                 </span>
             </Link>  
         </div>

@@ -17,7 +17,7 @@ export const Login = () => {
   function login(event) {
     axios({
       method: "POST",
-      url:"https://hooked-to-movies.herokuapp.com/api/login",
+      url:"https://hookedbackend.onrender.com/api/login",
       data:{
         name: userName,
         password: password

@@ -12,7 +12,7 @@ import { GridComponent } from 'react-spring-animated-grid'
 
 export const WatchList = () => {
 
-  const { data } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
+  const { data } = useFetch("https://hookedbackend.onrender.com/movies/")
   const [ movies, setMovies ] = useState(null);
   const [ boxStyle, setBoxStyle ] = useState('movie-box animate-fade');
   const [ isLoggedIn, setIsLoggedIn ] = useState(true);
@@ -27,7 +27,7 @@ export const WatchList = () => {
     console.log("MOVIES CHANGED");
     console.log(movies);
     // Check how many items watchlist has, if not enough to fill one row change justify-center to justify-left
-    if(movies !== null){
+    if(movies !== null && movies !== 'null'){
 
       let columns = Math.floor(((width * 0.9) + 15) / 175);
 
@@ -83,16 +83,16 @@ export const WatchList = () => {
 
     // Stop animation
     e.target.parentNode.parentNode.parentNode.parentNode.className = 'movie-box';
-    setBoxStyle('movie-box animate-slowSpin')
+    setBoxStyle('movie-box animate-reorder')
 
-    setTimeout(() => {setBoxStyle('movie-box animate-fade')}, 300)
+    setTimeout(() => {setBoxStyle('movie-box')}, 1000)
 
-    }, 300)
+    }, 450)
 
     // Remove movie from database watchlist
     axios({
       method: "POST",
-      url:"https://hooked-to-movies.herokuapp.com/api/watchlist/delete",
+      url:"https://hookedbackend.onrender.com/api/watchlist/delete",
       data:{
         name: cookies.get('name'),
         watchlist: id
@@ -112,6 +112,8 @@ export const WatchList = () => {
   }
 
   const handleLoad = (e) => {
+
+    console.log("LOADED");
 
     let gridItems = Object.values(gridRef.current.children);
 
@@ -141,43 +143,40 @@ export const WatchList = () => {
     }
 }
 
-  const currentPageData = movies && movies
-    .map((movie)=>
-    
+  const currentPageData = movies !== null && movies.map((movie) => 
     <div key={movie.movie_id} className={`movie-box ${boxStyle}`}> 
-        <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
-            <img
-            src={require(`./posters/${movie.movie_id}.jpg`)} 
-            id={'none'}
-            onLoad={e => handleLoad(e)}
-            />
+      <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
+          <img
+          src={require(`./posters/${movie.movie_id}.jpg`)} 
+          id={'none'}
+          onLoad={e => handleLoad(e)} 
+          />
 
-            <span>
-            
-            <div className="delete-icon" id={movie.movie_id} onClick={deleteItem}>  
-                    <VscClose id={movie.movie_id} size='28'
-                    />
-            </div>
-            
-            <div className="movie-info">
-                <h2>{movie.title}</h2>
-                <h3>{movie.start_year}</h3>
-                <div className="rating">
-                <img src={require(`./img/star.png`)} />
-                <h1>{movie.rating}</h1>
-                </div>
-            </div>
-            </span>
-        </Link>  
+          <span>
+          
+          <div className="delete-icon" id={movie.movie_id} onClick={deleteItem}>  
+                  <VscClose id={movie.movie_id} size='28'
+                  />
+          </div>
+          
+          <div className="movie-info">
+              <h2>{movie.title}</h2>
+              <h3>{movie.start_year}</h3>
+              <div className="rating">
+              <img src={require(`./img/star.png`)} />
+              <h1>{movie.rating}</h1>
+              </div>
+          </div>
+          </span>
+      </Link>  
     </div>
-
-    );
+  )
 
   return (
     <div>
         <title>Hooked</title>
 
-        <div onMousePress={handleClick}>
+        <div onMouseDown={handleClick}>
           {loginMenu === true && <Login />}
         </div>
         <NavBar />
@@ -201,7 +200,8 @@ export const WatchList = () => {
                   </div>  
                   )
               }
-        
+
+
             <div className="movie-grid justify-center" ref={gridRef} style={imagesLoaded ? {} : {display: 'none'}}>
               {currentPageData}
             </div>

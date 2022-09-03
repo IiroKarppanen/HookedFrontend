@@ -12,7 +12,7 @@ const UseWatchlist = function(method, e) {
       
     axios({
         method: "POST",
-        url:`https://hooked-to-movies.herokuapp.com/api/watchlist${method}`,
+        url:`https://hookedbackend.onrender.com/api/watchlist${method}`,
         data:{
             name: cookies.get('name'),
             watchlist: movie_id

@@ -29,13 +29,16 @@ function Movie() {
     const [ imagesLoaded, setImagesLoaded ] = useState(false);
 
     const [ updatePage, setUpdatePage ] = useState('');
+    const [ updatePage2, setUpdatePage2 ] = useState('');
+    const [ boxStyle, setBoxStyle ] = useState('movie-box animate-fade');
+    const [ iconStyle, setIconStyle ] = useState('');
 
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ itemCount, setItemCount ] = useState(0);
     const { width } = useWindowDimensions();
-    const [ iconStyle, setIconStyle ] = useState('');
+    
 
-    const { data, isPending } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
+    const { data, isPending } = useFetch("https://hookedbackend.onrender.com/movies/")
 
     const gridRef = useRef()
     const cookies = new Cookies();
@@ -161,31 +164,36 @@ function Movie() {
             if((e.target.parentNode.id) === id){
                 e.preventDefault()
                 setUpdatePage(id)
+                setBoxStyle('movie-box')
                 setIconStyle('animate-spin')
-                //e.target.parentNode.parentNode.className = 'add-icon animate-spin';
-                setTimeout(() => {
-                    console.log("DO ANIMATION NOW");
-                    //e.target.parentNode.parentNode.className = 'add-icon';
+                
+                setTimeout(function() { 
                     setUpdatePage('') 
-                    setIconStyle('')   
-                }, 1000)
+                    setIconStyle('')  
+                    setUpdatePage2(id) 
+                    setTimeout(() => {setUpdatePage2('')}, 1000) 
+                }, 500);
             }
             if((e.target.className) === 'add-icon'){
                 e.preventDefault()
                 setUpdatePage(id)
+                setBoxStyle('movie-box')
                 setIconStyle('animate-spin')
-                //e.target.className = 'add-icon animate-spin';
-                setTimeout(() => {
-                    console.log("DO ANIMATION NOW");
-                    // e.target.className = 'add-icon';
+
+                setTimeout(function() { 
                     setUpdatePage('') 
-                    setIconStyle('')   
-                }, 1000)
+                    setIconStyle('')  
+                    setUpdatePage2(id) 
+                    setTimeout(() => {setUpdatePage2('')}, 1000) 
+                 }, 500);
+               
+                    
+             
                 
             }
         }
 
-        const handleLoad = (e) => {
+        const handleLoad = (e, id) => {
 
             let gridItems = Object.values(gridRef.current.children);
 
@@ -193,10 +201,10 @@ function Movie() {
             gridItems.pop();
 
             // Set movie box id loaded when image is loaded
-            e.target.parentNode.parentNode.id = 'loaded';
+            e.target.parentNode.parentNode.id = `loaded ${id}`;
 
             // Check if every item in grid has id "loaded", if true display grid
-            if(gridItems.every(item => item.id === "loaded")){
+            if(gridItems.every(item => item.id.includes("loaded"))){
                 setImagesLoaded(true)
             }
             else{
@@ -239,16 +247,15 @@ function Movie() {
         const currentPageData = filteredMovies && filteredMovies
         .slice((itemCount * currentPage) - itemCount , (itemCount * currentPage))
         .map((movie)=>
-        
      
-        <div key={movie.movie_id} className="movie-box animate-fade"> 
+        <div key={movie.movie_id} className={updatePage2 === movie.movie_id ? 'movie-box animate-save' : `${boxStyle}`}> 
         
             <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
 
                 <img
                     src={require(`./posters/${movie.movie_id}.jpg`)}
                     id={'none'}
-                    onLoad={e => handleLoad(e)}
+                    onLoad={e => handleLoad(e, movie.movie_id)}
                 />
 
                 <span>
@@ -256,8 +263,6 @@ function Movie() {
                 {watchlist !== undefined && watchlist.includes(movie.movie_id) 
                 ? 
                 <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', e)}> 
-                {console.log("UPDATE PAGE")} 
-                {console.log(updatePage)}
                 {updatePage === movie.movie_id
                 ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
                 : <VscClose id={movie.movie_id} size='24'/>
@@ -309,7 +314,6 @@ function Movie() {
                         <a className="genre-link" onClick={filterMovies}>Thriller</a> 
                         <a className="genre-link" onClick={filterMovies}>Romance</a>
                         <a className="genre-link" onClick={filterMovies}>Fantasy</a>
-                        <a className="genre-link" onClick={filterMovies}>Superhero</a>
                         <a className="genre-link" onClick={filterMovies}>Adventure</a>
                         <a className="genre-link" onClick={filterMovies}>Animation</a>
                     </div>

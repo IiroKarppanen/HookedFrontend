@@ -51,20 +51,25 @@ module.exports = {
         },
         fadeOut: {
           '0%': { opacity: '1', transform: 'scale(1)'},
-          '50%': { opacity: '.5', transform: 'scale(1.05)'},
-          '100%': { opacity: '1', transform: 'scale(1)'}
+          '100%': { opacity: '0', transform: 'scale(0.5)'}
         },
         reorder: {
-          '0%': { opacity: '1', transform: 'scale(1)', transform: 'rotate(-3deg)'},
-          '50%': { opacity: '.5', transform: 'scale(1.1)', transform: 'rotate(+6deg)'},
-          '100%': { opacity: '1', transform: 'scale(1)', transform: 'rotate(-3deg)'}
+          '0%': { opacity: '1', transform: 'scale(1)'},
+          '50%': { opacity: '0.7', transform: 'scale(1.01)'},
+          '100%': { opacity: '1', transform: 'scale(1)'}
+        },
+        save: {
+          '0%': { opacity: '1', transform: 'scale(1)'},
+          '50%': { opacity: '1', transform: 'scale(1.02)'},
+          '100%': { opacity: '1', transform: 'scale(1)'}
         },
       },
       animation: {
         fadeJump: 'fadeJump 1s ease-in',
         fade: 'fade 1s ease-in',
-        fadeOut: 'fadeOut 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        reorder: 'reorder 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        fadeOut: 'fadeOut 1s cubic-bezier(0.4, 0, 0.6, 1)',
+        reorder: 'reorder 1s',
+        save: 'save 1s',
       }
     },
   },

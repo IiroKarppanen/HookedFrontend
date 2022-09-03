@@ -9,7 +9,7 @@ import NavBar from "./Navbar";
 
 export const MovieDetail = () => {
 
-    const { data } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
+    const { data } = useFetch("https://hookedbackend.onrender.com/movies/")
     const [ loaded, setLoaded ] = useState(false);
     const [ loginMenu, setLoginMenu] = useState(false); 
     const [ watchlist, setWatchlist ] = useState(null);
