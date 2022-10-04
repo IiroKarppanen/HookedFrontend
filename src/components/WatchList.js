@@ -24,7 +24,12 @@ export const WatchList = () => {
 
   useEffect(() => {
     console.log("MOVIES CHANGED");
-    console.log(movies);
+    if(movies !== null && movies !== "null"){
+      if(movies.length == 0){
+        setImagesLoaded(true)
+      }
+    }
+    
     // Check how many items watchlist has, if not enough to fill one row change justify-center to justify-left
     if(movies !== null && movies !== 'null'){
 
@@ -82,9 +87,9 @@ export const WatchList = () => {
 
     // Stop animation
     e.target.parentNode.parentNode.parentNode.parentNode.className = 'movie-box';
-    setBoxStyle('movie-box animate-reorder')
+    //setBoxStyle('movie-box animate-reorder')
 
-    setTimeout(() => {setBoxStyle('movie-box')}, 1000)
+    //setTimeout(() => {setBoxStyle('movie-box')}, 1000)
 
     }, 450)
 

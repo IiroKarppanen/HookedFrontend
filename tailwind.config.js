@@ -51,7 +51,7 @@ module.exports = {
         },
         fadeOut: {
           '0%': { opacity: '1', transform: 'scale(1)'},
-          '100%': { opacity: '0', transform: 'scale(0.5)'}
+          '100%': { opacity: '0', transform: 'scale(0)'}
         },
         reorder: {
           '0%': { opacity: '1', transform: 'scale(1)'},
