@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import axios from "axios";
 import { RiMovie2Line } from 'react-icons/ri';
 import { Register } from './Register';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 export const Login = () => {
 
@@ -11,13 +12,16 @@ export const Login = () => {
   const  [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [ invalid, setInvalid ] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(false);
 
   const cookies = new Cookies();
 
   function login(event) {
+    setIsLoading(true)
+    console.log("TRUE");
     axios({
       method: "POST",
-      url:"https://hooked-to-movies.herokuapp.com/api/login",
+      url:"https://hookedbackend.onrender.com/api/login",
       data:{
         name: userName,
         password: password
@@ -28,9 +32,11 @@ export const Login = () => {
       cookies.set("watchlist", response.data.watchlist);
       cookies.set('name', response.data.name);
       setInvalid(false);
+      setIsLoading(false)
       window.location.reload();
     }).catch(() => {
       setInvalid(true);
+      setIsLoading(false)
     })
     event.preventDefault()
 }
@@ -49,7 +55,10 @@ export const Login = () => {
           </div>
 
           <div className='title text-center w-full font-thin mt-2'>
-            { isLoggedIn 
+            {isLoading ? 
+              <AiOutlineLoading3Quarters className="inline animate-spin" size="30"/>
+            :
+            isLoggedIn 
             ? <h1 className='text-base font-thin text-green-400'>Logged In</h1>
             : invalid === false && <h1 className='text-base font-thin'>Log In</h1>
             }

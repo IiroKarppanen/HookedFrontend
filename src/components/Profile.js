@@ -22,7 +22,7 @@ export const Profile = () => {
       if(nameDisabled === false){
         axios({
           method: "POST",
-          url:"https://hooked-to-movies.herokuapp.com/api/updateName",
+          url:"https://hookedbackend.onrender.com/api/updateName",
           data:{
             name: cookies.get('name'),
             newname: name,

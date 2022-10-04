@@ -48,11 +48,28 @@ module.exports = {
         fade: {
           '0%': { opacity: '0'},
           '20%': { opacity: '100'},
-        }
+        },
+        fadeOut: {
+          '0%': { opacity: '1', transform: 'scale(1)'},
+          '100%': { opacity: '0', transform: 'scale(0)'}
+        },
+        reorder: {
+          '0%': { opacity: '1', transform: 'scale(1)'},
+          '50%': { opacity: '0.7', transform: 'scale(1.01)'},
+          '100%': { opacity: '1', transform: 'scale(1)'}
+        },
+        save: {
+          '0%': { opacity: '1', transform: 'scale(1)'},
+          '50%': { opacity: '1', transform: 'scale(1.02)'},
+          '100%': { opacity: '1', transform: 'scale(1)'}
+        },
       },
       animation: {
         fadeJump: 'fadeJump 1s ease-in',
         fade: 'fade 1s ease-in',
+        fadeOut: 'fadeOut 1s cubic-bezier(0.4, 0, 0.6, 1)',
+        reorder: 'reorder 1s',
+        save: 'save 1s',
       }
     },
   },

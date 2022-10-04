@@ -17,7 +17,7 @@ export const Register = () => {
     if(password === password2){
       axios({
         method: "POST",
-        url:"https://hooked-to-movies.herokuapp.com/api/register",
+        url:"https://hookedbackend.onrender.com/api/register",
         data:{
           name: name,
           password: password

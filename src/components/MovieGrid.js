@@ -6,10 +6,15 @@ import  { MdFilterListAlt } from 'react-icons/md';
 import { BiSortAlt2 } from 'react-icons/bi';
 import { BsFillBookmarkFill, BsArrowRight, BsArrowLeft } from 'react-icons/bs';
 import { BiFirstPage } from 'react-icons/bi'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Spinner from "./Spinner";
-import { LazyLoadImage } from 'react-lazy-load-image-component';    
+import NavBar from "./Navbar";
+import { Login } from "./Login";  
 import UseWatchlist  from "./UseWatchlist";
 import useWindowDimensions from "./useWindowDimensions";
+import Cookies from 'universal-cookie';
+import { VscClose } from "react-icons/vsc";
+
 
 
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -20,16 +25,25 @@ function Movie() {
     const [filteredMovies, setFilteredMovies] = useState(null);
     const [selectState, setSelectState] = useState("undefined");
     const [reverseState, setReverseState] = useState(false);
-    const [ insideButton, setInsideButton ] = useState(false);
+    const [ loginMenu, setLoginMenu] = useState(false); 
     const [ imagesLoaded, setImagesLoaded ] = useState(false);
+
+    const [ updatePage, setUpdatePage ] = useState('');
+    const [ updatePage2, setUpdatePage2 ] = useState('');
+    const [ boxStyle, setBoxStyle ] = useState('movie-box animate-fade');
+    const [ iconStyle, setIconStyle ] = useState('');
 
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ itemCount, setItemCount ] = useState(0);
     const { width } = useWindowDimensions();
+    
 
-    const { data, isPending } = useFetch("https://hooked-to-movies.herokuapp.com/movies/")
+    const { data, isPending } = useFetch("https://hookedbackend.onrender.com/movies/")
 
     const gridRef = useRef()
+    const cookies = new Cookies();
+
+    const watchlist = cookies.get('watchlist');
 
     useEffect(() => {
         console.log("PENDING DATA: ", isPending);
@@ -145,22 +159,41 @@ function Movie() {
             
         }
 
-        // Run watchlist add/delete function
-        const addItem = (e) => {
-
-            let id = e.target.parentNode.getAttribute("id");
-            if(id === null){
-              id = e.target.getAttribute("id");
+        const handleLink = (e, id) => {
+            // Don't follow link if user clicked save/unsave movie button
+            if((e.target.parentNode.id) === id){
+                e.preventDefault()
+                setUpdatePage(id)
+                setBoxStyle('movie-box')
+                setIconStyle('animate-spin')
+                
+                setTimeout(function() { 
+                    setUpdatePage('') 
+                    setIconStyle('')  
+                    setUpdatePage2(id) 
+                    setTimeout(() => {setUpdatePage2('')}, 1000) 
+                }, 500);
             }
+            if((e.target.className) === 'add-icon'){
+                e.preventDefault()
+                setUpdatePage(id)
+                setBoxStyle('movie-box')
+                setIconStyle('animate-spin')
 
-            UseWatchlist('/add', id);
-        } 
-
-        const handleLink = (e) => {
-            if(insideButton === true){e.preventDefault()}
+                setTimeout(function() { 
+                    setUpdatePage('') 
+                    setIconStyle('')  
+                    setUpdatePage2(id) 
+                    setTimeout(() => {setUpdatePage2('')}, 1000) 
+                 }, 500);
+               
+                    
+             
+                
+            }
         }
 
-        const handleLoad = (e) => {
+        const handleLoad = (e, id) => {
 
             let gridItems = Object.values(gridRef.current.children);
 
@@ -168,14 +201,22 @@ function Movie() {
             gridItems.pop();
 
             // Set movie box id loaded when image is loaded
-            e.target.parentNode.parentNode.id = 'loaded';
+            e.target.parentNode.parentNode.id = `loaded ${id}`;
 
             // Check if every item in grid has id "loaded", if true display grid
-            if(gridItems.every(item => item.id === "loaded")){
+            if(gridItems.every(item => item.id.includes("loaded"))){
                 setImagesLoaded(true)
             }
             else{
                 setImagesLoaded(false)
+            }
+        }
+
+        // If login menu is active and user clicks wrapper, close menu
+        const handleClick = (e) => {
+            if(e.target.className.includes("login-wrapper")){
+                setLoginMenu(false)
+
             }
         }
 
@@ -206,25 +247,36 @@ function Movie() {
         const currentPageData = filteredMovies && filteredMovies
         .slice((itemCount * currentPage) - itemCount , (itemCount * currentPage))
         .map((movie)=>
-        
      
-        <div key={movie.movie_id} className="movie-box animate-fade"> 
+        <div key={movie.movie_id} className={updatePage2 === movie.movie_id ? 'movie-box animate-save' : `${boxStyle}`}> 
         
-            <Link onClick={handleLink} to={`/detail/${movie.id}`}>  
+            <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
 
                 <img
                     src={require(`./posters/${movie.movie_id}.jpg`)}
                     id={'none'}
-                    onLoad={e => handleLoad(e)}
+                    onLoad={e => handleLoad(e, movie.movie_id)}
                 />
 
                 <span>
-                <div className="add-icon" id={movie.movie_id} onClick={addItem}
-                onMouseEnter={() => setInsideButton(true)}
-                onMouseLeave={() => setInsideButton(false)}
-                >  
-                    <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+
+                {watchlist !== undefined && watchlist.includes(movie.movie_id) 
+                ? 
+                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', e)}> 
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <VscClose id={movie.movie_id} size='24'/>
+                }
                 </div>
+                :
+                <div className="add-icon" id={movie.movie_id} data-tooltip-target="tooltip-default" onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}>  
+                {updatePage === movie.movie_id
+                ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
+                : <BsFillBookmarkFill id={movie.movie_id} size='14'/>
+                }
+                </div>
+                }
+
                 <div className="movie-info">
                     <h2>{movie.title}</h2>
                     <h3>{movie.start_year}</h3>
@@ -244,6 +296,11 @@ function Movie() {
 
             <div>
 
+            <div onMouseDown={handleClick}>
+                {loginMenu === true && <Login />}
+            </div>
+            <NavBar/>
+
             <div className="content">
 
                 <div className="options m-auto h-28 w-11/12 tb:w-10/12 lp:w-10/12 dp:w-10/12 mt-3">
@@ -257,7 +314,6 @@ function Movie() {
                         <a className="genre-link" onClick={filterMovies}>Thriller</a> 
                         <a className="genre-link" onClick={filterMovies}>Romance</a>
                         <a className="genre-link" onClick={filterMovies}>Fantasy</a>
-                        <a className="genre-link" onClick={filterMovies}>Superhero</a>
                         <a className="genre-link" onClick={filterMovies}>Adventure</a>
                         <a className="genre-link" onClick={filterMovies}>Animation</a>
                     </div>
