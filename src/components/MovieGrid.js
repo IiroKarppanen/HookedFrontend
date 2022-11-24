@@ -37,7 +37,6 @@ function Movie() {
     const [ itemCount, setItemCount ] = useState(0);
     const { width } = useWindowDimensions();
     
-
     const { data, isPending } = useFetch("https://hookedbackend.onrender.com/movies/")
 
     const gridRef = useRef()
@@ -46,7 +45,7 @@ function Movie() {
     const watchlist = cookies.get('watchlist');
 
     useEffect(() => {
-        console.log("PENDING DATA: ", isPending);
+        console.log("PENDING-DATA: ", isPending);
     }, [isPending])
 
     useEffect(() => {
@@ -244,6 +243,15 @@ function Movie() {
             }
         }
 
+        const getPoster = (id) => {
+            let image = undefined
+            try{image = require(`./posters/${id}.jpg`)}
+            catch{image = require(`./img/alt_poster.jpg`)}
+            return image
+        } 
+
+        // require(`./posters/${movie.movie_id}.jpg`)
+
         const currentPageData = filteredMovies && filteredMovies
         .slice((itemCount * currentPage) - itemCount , (itemCount * currentPage))
         .map((movie)=>
@@ -252,10 +260,13 @@ function Movie() {
         
             <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
 
+            
+
                 <img
-                    src={require(`./posters/${movie.movie_id}.jpg`)}
+                    src={getPoster(movie.movie_id)}
                     id={'none'}
                     onLoad={e => handleLoad(e, movie.movie_id)}
+                    alt="broken image"
                 />
 
                 <span>

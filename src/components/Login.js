@@ -18,7 +18,6 @@ export const Login = () => {
 
   function login(event) {
     setIsLoading(true)
-    console.log("TRUE");
     axios({
       method: "POST",
       url:"https://hookedbackend.onrender.com/api/login",
