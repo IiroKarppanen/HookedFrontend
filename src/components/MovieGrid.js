@@ -266,7 +266,6 @@ function Movie() {
                     src={getPoster(movie.movie_id)}
                     id={'none'}
                     onLoad={e => handleLoad(e, movie.movie_id)}
-                    alt="broken image"
                 />
 
                 <span>

@@ -28,7 +28,6 @@ export const MovieDetail = () => {
     // Detect when bg image has finished loading
     const handleImageLoaded = () => {
         setLoaded(true);
-        console.log("loading")
     }
 
     // Run watchlist add/delete function
@@ -41,7 +40,6 @@ export const MovieDetail = () => {
         setTimeout(() => {
             setWatchlist(cookies.get('watchlist'))
             setLoading(false)
-            console.log("DONE")
         }, 500);
     } 
 
@@ -110,8 +108,8 @@ export const MovieDetail = () => {
 
                     ? <button type="button" disabled={loading} className="btn btn-outline-light" onClick={() => setLoginMenu(true)}>Add To Watchlist</button>
                     :   cookies.get('watchlist').includes(movie.movie_id)
-                        ? <button type="button" className="btn btn-outline-light" onClick={(e) => handleWatchlist('/delete', e)}>Delete From Watchlist</button>
-                        : <button type="button" className="btn btn-outline-light" onClick={(e) => handleWatchlist('/add', e)}>Add To Watchlist</button>
+                        ? <button type="button" disabled={loading} className="btn btn-outline-light" onClick={(e) => handleWatchlist('/delete', e)}>Delete From Watchlist</button>
+                        : <button type="button" disabled={loading} className="btn btn-outline-light" onClick={(e) => handleWatchlist('/add', e)}>Add To Watchlist</button>
                     }
                                     
                 </div>
