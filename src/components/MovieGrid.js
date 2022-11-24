@@ -273,14 +273,14 @@ function Movie() {
 
                 {watchlist !== undefined && watchlist.includes(movie.movie_id) 
                 ? 
-                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', e)}> 
+                <div className="add-icon" id={movie.movie_id} onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/delete', movie.movie_id)}> 
                 {updatePage === movie.movie_id
                 ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
                 : <VscClose id={movie.movie_id} size='24'/>
                 }
                 </div>
                 :
-                <div className="add-icon" id={movie.movie_id} data-tooltip-target="tooltip-default" onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/add', e)}>  
+                <div className="add-icon" id={movie.movie_id} data-tooltip-target="tooltip-default" onClick={(e) => cookies.get('watchlist') === undefined ? setLoginMenu(true) : UseWatchlist('/add', movie.movie_id)}>  
                 {updatePage === movie.movie_id
                 ? <AiOutlineLoading3Quarters className={iconStyle} id={movie.movie_id} size='18'/>
                 : <BsFillBookmarkFill id={movie.movie_id} size='14'/>
