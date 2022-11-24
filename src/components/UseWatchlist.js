@@ -5,6 +5,8 @@ const UseWatchlist = function(method, id) {
 
     const cookies = new Cookies();
 
+    console.log(id)
+
     axios({
         method: "POST",
         url:`https://hookedbackend.onrender.com/api/watchlist${method}`,

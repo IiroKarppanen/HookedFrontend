@@ -23,7 +23,6 @@ export const WatchList = () => {
   const gridRef = useRef();
 
   useEffect(() => {
-    console.log("MOVIES CHANGED");
     if(movies !== null && movies !== "null"){
       if(movies.length == 0){
         setImagesLoaded(true)
@@ -54,6 +53,7 @@ export const WatchList = () => {
     }
 
     if(watchlist === null){
+      setImagesLoaded(true)
       setIsLoggedIn(true)
     }
 
@@ -104,7 +104,6 @@ export const WatchList = () => {
     }).then((response) => {
       // Update cookies
       cookies.set("watchlist", response.data.watchlist);     
-      console.log(movies); 
     })
   }
 
