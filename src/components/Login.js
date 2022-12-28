@@ -18,7 +18,6 @@ export const Login = () => {
 
   function login(event) {
     setIsLoading(true)
-    console.log("starting the process - " ,new Date().toLocaleString())
     axios({
       method: "POST",
       url:"https://hookedbackend.onrender.com/api/login",
@@ -42,6 +41,8 @@ export const Login = () => {
     event.preventDefault()
 }
 
+  //<AiOutlineLoading3Quarters className="inline animate-spin" size="30"/>
+
   return (
     <div className='login-wrapper absolute left-0 z-10 w-full h-full bg-primary-900 bg-opacity-40 text-primary-100 animate-fadeJump'>
 
@@ -57,7 +58,7 @@ export const Login = () => {
 
           <div className='title text-center w-full font-thin mt-2'>
             {isLoading ? 
-              <AiOutlineLoading3Quarters className="inline animate-spin" size="30"/>
+              <p>`${new Date().toLocaleString()}`</p>
             :
             isLoggedIn 
             ? <h1 className='text-base font-thin text-green-400'>Logged In</h1>
