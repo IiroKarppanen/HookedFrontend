@@ -183,15 +183,6 @@ function Movie() {
             }
         }
 
-        const getPoster = (id) => {
-            let image = undefined
-            try{image = require(`./posters/${id}.jpg`)}
-            catch{image = require(`./img/alt_poster.jpg`)}
-            return image
-        } 
-
-        // require(`./posters/${movie.movie_id}.jpg`)
-
         const currentPageData = filteredMovies && filteredMovies
         .slice((itemCount * currentPage) - itemCount , (itemCount * currentPage))
         .map((movie)=>
@@ -200,7 +191,7 @@ function Movie() {
         
             <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
                 <img
-                    src={getPoster(movie.movie_id)}
+                    src={`${movie.poster_url}`}
                     id={'none'}
                     onLoad={e => handleLoad(e, movie.movie_id)}
                 />

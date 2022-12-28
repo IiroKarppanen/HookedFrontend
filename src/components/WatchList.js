@@ -148,7 +148,7 @@ export const WatchList = () => {
     <div key={movie.movie_id} className={`movie-box ${boxStyle}`}> 
       <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
           <img
-          src={require(`./posters/${movie.movie_id}.jpg`)} 
+          src={`${movie.poster_url}`}
           id={'none'}
           onLoad={e => handleLoad(e)} 
           />
