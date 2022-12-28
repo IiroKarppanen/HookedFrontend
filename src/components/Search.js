@@ -129,7 +129,7 @@ export const Search = () => {
         <div key={movie.movie_id} className={updatePage2 === movie.movie_id ? 'movie-box animate-save' : `${boxStyle}`}> 
             <Link to={`/detail/${movie.id}`} onClick={(e) => handleLink(e, movie.movie_id)}>      
                 <img
-                src={require(`./posters/${movie.movie_id}.jpg`)} 
+                src={`${movie.poster_url}`}
                 onLoad={(e) => {handleLoad(e)}}
                 />
 
