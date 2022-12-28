@@ -90,19 +90,18 @@ function Movie() {
         }
 
         const reverseSort = () => {
-
             if(reverseState){
-                var obj = filteredMovies.sort((a, b) => (a[`${selectState}`] > b[`${selectState}`]  ? -1 : 1))
+                let obj = filteredMovies.sort((a, b) => (a[`${selectState}`] > b[`${selectState}`]  ? -1 : 1))
                 setFilteredMovies(Object.values(obj))
             }
             else{
-                var obj = filteredMovies.sort((a, b) => (a[`${selectState}`] < b[`${selectState}`]  ? -1 : 1))
+                let obj = filteredMovies.sort((a, b) => (a[`${selectState}`] < b[`${selectState}`]  ? -1 : 1))
                 setFilteredMovies(Object.values(obj)) 
             }
             setReverseState(!reverseState)
-            
         }
 
+        
         const handleLink = (e, id) => {
             // Don't follow link if user clicked save/unsave movie button
             if((e.target.parentNode.id) === id){
