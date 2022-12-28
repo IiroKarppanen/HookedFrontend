@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
+import { Login } from "./Login";  
+import UseWatchlist  from "./UseWatchlist";
 import useFetch from "./useFetch";
+import Spinner from "./Spinner";
+import NavBar from "./Navbar";
+import useWindowDimensions from "./useWindowDimensions";
+
+// Icons
 import  { MdFilterListAlt } from 'react-icons/md';
 import { BiSortAlt2 } from 'react-icons/bi';
 import { BsFillBookmarkFill, BsArrowRight, BsArrowLeft } from 'react-icons/bs';
 import { BiFirstPage } from 'react-icons/bi'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import Spinner from "./Spinner";
-import NavBar from "./Navbar";
-import { Login } from "./Login";  
-import UseWatchlist  from "./UseWatchlist";
-import useWindowDimensions from "./useWindowDimensions";
-import Cookies from 'universal-cookie';
 import { VscClose } from "react-icons/vsc";
-
 
 
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -45,10 +47,6 @@ function Movie() {
     const watchlist = cookies.get('watchlist');
 
     useEffect(() => {
-        console.log("PENDING-DATA: ", isPending);
-    }, [isPending])
-
-    useEffect(() => {
         // Calculate how many columns container can fit with 90% width
         let columns = Math.floor(((width * 0.9) + 15) / 175);
         // Calculate how many items grid can have with 5 rows
@@ -56,11 +54,6 @@ function Movie() {
         setItemCount(items)
 
     }, [width])
-
-    useEffect(() => {
-        console.log("PAGE ", currentPage);
-        setImagesLoaded(false)
-    }, [currentPage])
 
 
     useEffect(() => {
@@ -77,84 +70,36 @@ function Movie() {
         setSelectState("undefined")
 
         // Filter movies with selected genre or attribute
-
         if(e.target.text === "Popular"){
             var obj = data.reduce((r, o) => (o.votes < (r[o.movie_id] || {}).votes || (r[o.movie_id] = o), r), {});
-            setFilteredMovies(Object.values(obj))
         }
-        else if(e.target.text !== "Popular"){
+        else {
   
             let filtered = data && data.filter(movie => {
                 return movie.genres.includes(e.target.text)})
 
-            let obj = filtered.reduce((r, o) => (o.votes < (r[o.movie_id] || {}).votes || (r[o.movie_id] = o), r), {});
-            setFilteredMovies(Object.values(obj))
+            var obj = filtered.reduce((r, o) => (o.votes < (r[o.movie_id] || {}).votes || (r[o.movie_id] = o), r), {});
         }
+        setFilteredMovies(Object.values(obj))
     };
 
 
-        const sortBy = e => {
-
-            setSelectState(e.target.value)
-
-            if(e.target.value === "Rating"){
-                var obj = filteredMovies.sort((a, b) => (a.rating > b.rating  ? -1 : 1))
-                setFilteredMovies(Object.values(obj))
-            }
-            if(e.target.value === "Votes"){
-                var obj = filteredMovies.sort((a, b) => (a.votes > b.votes  ? -1 : 1))
-                setFilteredMovies(Object.values(obj))
-            }
-            if(e.target.value === "Revenue"){
-                var obj = filteredMovies.sort((a, b) => (a.revenue > b.revenue  ? -1 : 1))
-                setFilteredMovies(Object.values(obj))    
-            }
-            if(e.target.value === "Year"){
-                var obj = filteredMovies.sort((a, b) => (a.start_year > b.start_year  ? -1 : 1))
-                setFilteredMovies(Object.values(obj))    
-            }
+        const sortBy = (e) => {
+            var obj = filteredMovies.sort((a, b) => (a[`${e.target.value}`] > b[`${e.target.value}`]  ? -1 : 1))
+            setFilteredMovies(Object.values(obj))
         }
 
-        const reverseSort = e => {
-            if(reverseState === false){
-                if(selectState === "Year"){
-                    var obj = filteredMovies.sort((a, b) => (a.start_year > b.start_year  ? 1 : -1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Votes"){
-                    var obj = filteredMovies.sort((a, b) => (a.votes > b.votes  ? 1 : -1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Rating"){
-                    var obj = filteredMovies.sort((a, b) => (a.rating > b.rating  ? 1 : -1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Revenue"){
-                    var obj = filteredMovies.sort((a, b) => (a.revenue > b.revenue  ? 1 : -1))
-                    setFilteredMovies(Object.values(obj))
-                }
+        const reverseSort = () => {
 
-            setReverseState(true)
+            if(reverseState){
+                var obj = filteredMovies.sort((a, b) => (a[`${selectState}`] > b[`${selectState}`]  ? -1 : 1))
+                setFilteredMovies(Object.values(obj))
             }
             else{
-                if(selectState === "Year"){
-                    var obj = filteredMovies.sort((a, b) => (a.start_year > b.start_year  ? -1 : 1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Votes"){
-                    var obj = filteredMovies.sort((a, b) => (a.votes > b.votes  ? -1 : 1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Rating"){
-                    var obj = filteredMovies.sort((a, b) => (a.rating > b.rating  ? -1 : 1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                if(selectState === "Revenue"){
-                    var obj = filteredMovies.sort((a, b) => (a.revenue > b.revenue  ? -1 : 1))
-                    setFilteredMovies(Object.values(obj))
-                }
-                setReverseState(false)
+                var obj = filteredMovies.sort((a, b) => (a[`${selectState}`] < b[`${selectState}`]  ? -1 : 1))
+                setFilteredMovies(Object.values(obj)) 
             }
+            setReverseState(!reverseState)
             
         }
 
@@ -185,10 +130,6 @@ function Movie() {
                     setUpdatePage2(id) 
                     setTimeout(() => {setUpdatePage2('')}, 1000) 
                  }, 500);
-               
-                    
-             
-                
             }
         }
 
@@ -259,9 +200,6 @@ function Movie() {
         <div key={movie.movie_id} className={updatePage2 === movie.movie_id ? 'movie-box animate-save' : `${boxStyle}`}> 
         
             <Link onClick={(e) => handleLink(e, movie.movie_id)} to={`/detail/${movie.id}`}>  
-
-            
-
                 <img
                     src={getPoster(movie.movie_id)}
                     id={'none'}
@@ -332,12 +270,13 @@ function Movie() {
                         <div className="h-9 w-9 ml-0 mr-4">
                             <MdFilterListAlt className="text-primary-700 h-9 w-9"/>
                         </div>
+                        
                         <select value={selectState} onChange={sortBy} className="bg-primary-700 border-0 text-primary-100 text-sm rounded-lg focus:bg-primary-600 focus:ring-[#3c2ab0] placeholder-gray-400 focus:outline-none block w-30 h-9 duration-500 ease-in-out hover:shadow-lg hover:shadow-[#3c2ab0]/30">
                             <option value="undefined" disabled selected hidden>Sort By</option>
-                            <option value="Rating">IMDB Rating</option>
-                            <option value="Votes">IMDB Votes</option>
-                            <option value="Year">Release Year</option>
-                            <option value="Revenue">Revenue</option>
+                            <option value="rating">IMDB Rating</option>
+                            <option value="votes">IMDB Votes</option>
+                            <option value="start_year">Release Year</option>
+                            <option value="revenue">Revenue</option>
                         </select>
 
                         <div className="icon" onClick={reverseSort}>
